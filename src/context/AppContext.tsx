@@ -56,8 +56,10 @@ interface AppContextType {
   isEventJoined: (eventId: string) => boolean;
   addNewEvent: (event: FestivalEvent) => void;
 
-  // Cities
+  // State & City
   cities: CityInfo[];
+  selectedStateCode: string;
+  setSelectedStateCode: (stateCode: string) => void;
   selectedCity: string;
   setSelectedCity: (city: string) => void;
 
@@ -152,6 +154,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   });
 
   const [cities] = useState<CityInfo[]>(MOCK_CITIES);
+  const [selectedStateCode, setSelectedStateCode] = useState<string>('JH');
   const [selectedCity, setSelectedCity] = useState<string>('Ranchi');
 
   const [userEvents, setUserEvents] = useState<string[]>(() => {
@@ -784,6 +787,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         addNewEvent,
 
         cities,
+        selectedStateCode,
+        setSelectedStateCode,
         selectedCity,
         setSelectedCity,
 
