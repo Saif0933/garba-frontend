@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-festive: 'Rozha One', serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: #FAF7FD;
+    color: #1E1B4B;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Custom Festive Utility Classes */
+.font-festive {
+  font-family: var(--font-festive);
+}
+
+.font-script {
+  font-family: 'Caveat', 'Dancing Script', cursive;
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.festive-gradient {
+  background: linear-gradient(135deg, #6B21A8 0%, #BE185D 50%, #EA580C 100%);
+}
+
+.festive-gradient-gold {
+  background: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+}
+
+.festive-gradient-purple {
+  background: linear-gradient(135deg, #4C1D95 0%, #7E22CE 50%, #EC4899 100%);
+}
+
+.text-gradient-festive {
+  background: linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #A855F7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #FBBF24 0%, #F97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-card-dark {
+  background: rgba(30, 10, 60, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.festive-glow {
+  box-shadow: 0 10px 30px -10px rgba(219, 39, 119, 0.35);
+}
+
+.festive-glow-gold {
+  box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.4);
+}
+
+.festive-glow-purple {
+  box-shadow: 0 10px 30px -10px rgba(107, 33, 168, 0.35);
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F3E8FF;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C084FC;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A855F7;
+}
+
+/* Animation utilities */
+@keyframes pulse-subtle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
