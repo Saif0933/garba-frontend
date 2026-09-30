@@ -26,18 +26,18 @@ export const EventsPage: React.FC = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-5 sm:space-y-8 overflow-hidden">
       {/* Header Banner */}
-      <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-purple-900 via-pink-900 to-purple-950 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="w-full max-w-full overflow-hidden p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-purple-900 via-pink-900 to-purple-950 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
         <div className="space-y-2 max-w-xl">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-pink-500/30 text-pink-300 text-xs font-bold uppercase tracking-wider border border-pink-500/40">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500/30 text-pink-300 text-[11px] sm:text-xs font-bold uppercase tracking-wider border border-pink-500/40">
             <Sparkles className="w-3.5 h-3.5" />
             Navratri 2026 Festival Grounds
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black font-heading">
-            Garba & Dandiya Events
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black font-heading tracking-tight leading-tight">
+            Garba &amp; Dandiya Events
           </h1>
-          <p className="text-xs sm:text-sm text-purple-200/80">
+          <p className="text-xs sm:text-sm text-purple-200/80 leading-relaxed">
             Discover premier open-air grounds, stadium arenas, and luxury rooftop Dandiya nights across India. Connect with partners attending the same venue.
           </p>
         </div>
@@ -51,7 +51,7 @@ export const EventsPage: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search ground, city, venue..."
-              className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-purple-300/40 text-xs sm:text-sm text-white placeholder:text-purple-300/60 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-purple-300/40 text-xs sm:text-sm text-white placeholder:text-purple-300/60 focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
         </div>

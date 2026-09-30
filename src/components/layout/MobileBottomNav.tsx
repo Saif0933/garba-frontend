@@ -1,94 +1,103 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
-import { Home, Search, Calendar, MessageCircle, User, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, MessageCircle, User, Sparkles, Heart } from 'lucide-react';
 
 export const MobileBottomNav: React.FC = () => {
   const { isLoggedIn, unreadNotificationCount } = useApp();
   const location = useLocation();
 
-  // Hide on admin routes to prevent cluttering admin operations
-  if (location.pathname.startsWith('/admin')) {
+  // Hide on admin or auth routes to prevent cluttering
+  if (location.pathname.startsWith('/admin') || ['/', '/login', '/register', '/verify-otp', '/forgot-password'].includes(location.pathname)) {
     return null;
   }
 
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-purple-100 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] px-3 py-1.5 pb-safe">
-      <div className="flex items-center justify-around relative">
-        {/* Home */}
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-purple-100/90 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] px-2 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+      aria-label="Mobile Navigation"
+    >
+      <div className="flex items-center justify-around relative max-w-md mx-auto">
+        {/* Dashboard */}
         <NavLink
-          to="/"
+          to="/dashboard"
           className={({ isActive }) =>
-            `flex flex-col items-center py-1 px-2.5 rounded-xl transition-colors ${
-              isActive ? 'text-purple-900 font-bold' : 'text-slate-500 hover:text-purple-700'
+            `flex flex-col items-center py-1 px-2 rounded-xl transition-all duration-200 ${
+              isActive
+                ? 'text-[#FF1E6A] font-bold scale-105'
+                : 'text-slate-500 hover:text-purple-900 active:scale-95'
             }`
           }
         >
-          <Home className="w-5 h-5" />
-          <span className="text-[10px] mt-0.5">Home</span>
+          <LayoutDashboard className="w-5 h-5" />
+          <span className="text-[10px] font-semibold mt-0.5 tracking-tight">Home</span>
         </NavLink>
 
         {/* Find Partner */}
         <NavLink
           to="/find-partner"
           className={({ isActive }) =>
-            `flex flex-col items-center py-1 px-2.5 rounded-xl transition-colors ${
-              isActive ? 'text-purple-900 font-bold' : 'text-slate-500 hover:text-purple-700'
+            `flex flex-col items-center py-1 px-2 rounded-xl transition-all duration-200 ${
+              isActive
+                ? 'text-[#FF1E6A] font-bold scale-105'
+                : 'text-slate-500 hover:text-purple-900 active:scale-95'
             }`
           }
         >
-          <Search className="w-5 h-5" />
-          <span className="text-[10px] mt-0.5">Find</span>
-        </NavLink>
-
-        {/* Center Highlight CTA: Quick Match */}
-        <NavLink
-          to="/find-partner"
-          className="flex flex-col items-center -mt-5 bg-gradient-to-tr from-purple-700 via-pink-600 to-amber-500 text-white p-3 rounded-full shadow-lg shadow-pink-500/30 border-2 border-white transform active:scale-95 transition-transform"
-          aria-label="Find Garba Partner"
-        >
-          <Sparkles className="w-5 h-5 animate-pulse" />
+          <Users className="w-5 h-5" />
+          <span className="text-[10px] font-semibold mt-0.5 tracking-tight">Find</span>
         </NavLink>
 
         {/* Events */}
         <NavLink
           to="/events"
           className={({ isActive }) =>
-            `flex flex-col items-center py-1 px-2.5 rounded-xl transition-colors ${
-              isActive ? 'text-purple-900 font-bold' : 'text-slate-500 hover:text-purple-700'
+            `flex flex-col items-center py-1 px-2 rounded-xl transition-all duration-200 ${
+              isActive
+                ? 'text-[#FF1E6A] font-bold scale-105'
+                : 'text-slate-500 hover:text-purple-900 active:scale-95'
             }`
           }
         >
           <Calendar className="w-5 h-5" />
-          <span className="text-[10px] mt-0.5">Events</span>
+          <span className="text-[10px] font-semibold mt-0.5 tracking-tight">Events</span>
         </NavLink>
 
-        {/* Messages or Login */}
+        {/* Messages */}
         <NavLink
-          to={isLoggedIn ? '/messages' : '/login'}
+          to="/messages"
           className={({ isActive }) =>
-            `relative flex flex-col items-center py-1 px-2.5 rounded-xl transition-colors ${
-              isActive ? 'text-purple-900 font-bold' : 'text-slate-500 hover:text-purple-700'
+            `relative flex flex-col items-center py-1 px-2 rounded-xl transition-all duration-200 ${
+              isActive
+                ? 'text-[#FF1E6A] font-bold scale-105'
+                : 'text-slate-500 hover:text-purple-900 active:scale-95'
             }`
           }
         >
-          <MessageCircle className="w-5 h-5" />
-          <span className="text-[10px] mt-0.5">{isLoggedIn ? 'Chat' : 'Login'}</span>
+          <div className="relative">
+            <MessageCircle className="w-5 h-5" />
+            <span className="absolute -top-1 -right-1.5 w-3.5 h-3.5 bg-[#FF1E6A] text-white text-[8px] font-black rounded-full flex items-center justify-center">
+              5
+            </span>
+          </div>
+          <span className="text-[10px] font-semibold mt-0.5 tracking-tight">Chat</span>
         </NavLink>
 
         {/* Profile */}
         <NavLink
-          to={isLoggedIn ? '/profile' : '/register'}
+          to="/profile"
           className={({ isActive }) =>
-            `flex flex-col items-center py-1 px-2.5 rounded-xl transition-colors ${
-              isActive ? 'text-purple-900 font-bold' : 'text-slate-500 hover:text-purple-700'
+            `flex flex-col items-center py-1 px-2 rounded-xl transition-all duration-200 ${
+              isActive
+                ? 'text-[#FF1E6A] font-bold scale-105'
+                : 'text-slate-500 hover:text-purple-900 active:scale-95'
             }`
           }
         >
           <User className="w-5 h-5" />
-          <span className="text-[10px] mt-0.5">{isLoggedIn ? 'Profile' : 'Join'}</span>
+          <span className="text-[10px] font-semibold mt-0.5 tracking-tight">Profile</span>
         </NavLink>
       </div>
-    </div>
+    </nav>
   );
 };

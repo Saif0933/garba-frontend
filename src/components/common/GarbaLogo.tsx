@@ -59,7 +59,7 @@ export const GarbaLogo: React.FC<GarbaLogoProps> = ({
           </span>
         </div>
         {showTagline && (
-          <span className={`text-[10px] font-medium tracking-wide -mt-1 ${isDark ? 'text-purple-200/70' : 'text-purple-600/80'}`}>
+          <span className={`text-[10px] font-medium tracking-wide -mt-1 hidden sm:block ${isDark ? 'text-purple-200/70' : 'text-purple-600/80'}`}>
             No Partner? We’ve Got You.
           </span>
         )}

@@ -158,15 +158,13 @@ export const Navbar: React.FC = () => {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm shadow-purple-900/5 border-b border-purple-100/80 py-2.5'
-          : 'bg-white/80 backdrop-blur-sm border-b border-purple-50 py-3.5'
+      className={`sticky top-0 z-40 w-full h-16 sm:h-[68px] flex items-center bg-white/95 backdrop-blur-md border-b border-purple-100/80 transition-shadow duration-200 ${
+        isScrolled ? 'shadow-sm shadow-purple-900/5' : ''
       }`}
     >
-      <div className="max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Left: Logo */}
-        <GarbaLogo showTagline={!isScrolled} />
+        <GarbaLogo showTagline={true} />
 
         {/* Center: Search Bar (when logged in) or Desktop Nav Links (when public) */}
         {isLoggedIn ? (
@@ -246,7 +244,7 @@ export const Navbar: React.FC = () => {
             </button>
 
             {isStateDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl bg-white shadow-2xl border border-purple-100 p-3 z-50 animate-in fade-in-50 zoom-in-95 duration-150 space-y-2.5">
+              <div className="fixed inset-x-3 top-16 sm:absolute sm:inset-auto sm:right-0 sm:mt-2 w-auto sm:w-80 rounded-2xl bg-white shadow-2xl border border-purple-100 p-3 z-50 animate-in fade-in-50 zoom-in-95 duration-150 space-y-2.5 max-h-[85vh] overflow-y-auto">
                 {/* Header */}
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                   <div>
@@ -375,7 +373,7 @@ export const Navbar: React.FC = () => {
             </button>
 
             {isCityDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-72 sm:w-88 rounded-2xl bg-white shadow-2xl border border-pink-100 p-3 z-50 animate-in fade-in-50 zoom-in-95 duration-150 space-y-2.5">
+              <div className="fixed inset-x-3 top-16 sm:absolute sm:inset-auto sm:right-0 sm:mt-2 w-auto sm:w-88 rounded-2xl bg-white shadow-2xl border border-pink-100 p-3 z-50 animate-in fade-in-50 zoom-in-95 duration-150 space-y-2.5 max-h-[85vh] overflow-y-auto">
                 {/* Header */}
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                   <div>
@@ -688,24 +686,57 @@ export const Navbar: React.FC = () => {
           {/* Mobile Hamburger Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-slate-700 hover:text-purple-900 rounded-xl hover:bg-purple-50 lg:hidden transition-colors"
+            className="p-1.5 sm:p-2 text-slate-700 hover:text-purple-900 rounded-xl hover:bg-purple-50 lg:hidden transition-colors"
             aria-label="Toggle navigation"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Nav Drawer */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden border-t border-purple-100 bg-white/95 backdrop-blur-xl px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-4 duration-200">
+        <div className="lg:hidden border-t border-purple-100 bg-white/95 backdrop-blur-xl px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-4 duration-200 shadow-xl">
+          {/* Mobile Search Bar */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search events, partners, or groups..."
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const val = (e.target as HTMLInputElement).value;
+                  if (val) {
+                    navigate(`/find-partner?q=${encodeURIComponent(val)}`);
+                    setIsMobileMenuOpen(false);
+                  }
+                }
+              }}
+              className="w-full bg-slate-50 text-xs text-slate-800 placeholder-slate-400 pl-8 pr-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500"
+            />
+            <svg
+              className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-slate-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+
+          {/* Nav Links */}
           <div className="grid grid-cols-2 gap-2">
             {navLinks.map((link) => (
               <NavLink
                 key={link.path}
                 to={link.path}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-3 py-2 rounded-xl text-sm font-semibold flex items-center justify-between ${
+                  `px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-between ${
                     isActive ? 'bg-purple-100 text-purple-950 font-bold' : 'text-slate-700 hover:bg-purple-50'
                   }`
                 }
@@ -718,6 +749,25 @@ export const Navbar: React.FC = () => {
                 )}
               </NavLink>
             ))}
+          </div>
+
+          {/* Quick Location Badge in Mobile Drawer */}
+          <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl border border-purple-100 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-[#FF1E6A]" />
+              <span className="font-bold text-slate-800">
+                {selectedCity}, {currentStateObj?.name}
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsStateDropdownOpen(true);
+              }}
+              className="text-[11px] font-bold text-[#FF1E6A] hover:underline"
+            >
+              Change State ↺
+            </button>
           </div>
         </div>
       )}

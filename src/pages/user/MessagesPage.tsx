@@ -348,7 +348,13 @@ export const MessagesPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [conversationList, setConversationList] = useState<ConversationItem[]>(INITIAL_CONVERSATIONS);
-  const [selectedConvId, setSelectedConvId] = useState<string>('conv-riya');
+  // Default to empty on small mobile screens to show conversation list first, or 'conv-riya' on desktop
+  const [selectedConvId, setSelectedConvId] = useState<string>(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return '';
+    }
+    return 'conv-riya';
+  });
   const [activeTab, setActiveTab] = useState<'all' | 'matches' | 'groups'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [inputText, setInputText] = useState('');
@@ -357,13 +363,15 @@ export const MessagesPage: React.FC = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollContainerRef = useRef<HTMLDivElement>(null);
 
   const activeConversation = conversationList.find((c) => c.id === selectedConvId) || conversationList[0];
   const targetUser = users.find((u) => u.name.toLowerCase().includes(activeConversation.name.toLowerCase())) || users[0];
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatScrollContainerRef.current) {
+      chatScrollContainerRef.current.scrollTop = chatScrollContainerRef.current.scrollHeight;
+    }
   }, [activeConversation?.messages]);
 
   const filteredConversations = conversationList.filter((conv) => {
@@ -407,18 +415,20 @@ export const MessagesPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 h-[calc(100vh-80px)] min-h-[600px]">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 h-full items-stretch">
+    <div className="w-full max-w-[1400px] mx-auto p-0 md:px-4 md:py-4 h-[calc(100dvh-58px)] md:h-[calc(100vh-80px)] flex flex-col">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-0 md:gap-4 lg:gap-6 h-full w-full flex-1 min-h-0 items-stretch">
         
         {/* ================= LEFT PANEL: CONVERSATIONS LIST ================= */}
-        <div className={`md:col-span-4 lg:col-span-4 bg-white rounded-3xl border border-slate-200/90 shadow-sm flex flex-col overflow-hidden h-full ${
+        <div className={`col-span-12 md:col-span-5 lg:col-span-4 bg-white rounded-none md:rounded-3xl border-0 md:border border-slate-200/90 shadow-none md:shadow-sm flex flex-col overflow-hidden h-full ${
           selectedConvId ? 'hidden md:flex' : 'flex'
         }`}>
           {/* Header Title */}
-          <div className="p-4 sm:p-5 pb-3 border-b border-slate-100 space-y-3.5">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 font-heading flex items-center gap-2">
-              Messages <span className="text-slate-500 font-semibold text-base font-sans">(8)</span>
-            </h2>
+          <div className="p-3.5 sm:p-5 pb-2.5 sm:pb-3 border-b border-slate-100 space-y-3 bg-white">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 font-heading flex items-center gap-2">
+                Messages <span className="text-slate-500 font-semibold text-sm sm:text-base font-sans">({conversationList.length})</span>
+              </h2>
+            </div>
 
             {/* Search Box */}
             <div className="relative">
@@ -542,70 +552,71 @@ export const MessagesPage: React.FC = () => {
         </div>
 
         {/* ================= RIGHT PANEL: ACTIVE CHAT WINDOW ================= */}
-        <div className={`md:col-span-8 lg:col-span-8 bg-white rounded-3xl border border-slate-200/90 shadow-sm flex flex-col overflow-hidden h-full ${
+        <div className={`col-span-12 md:col-span-7 lg:col-span-8 bg-white rounded-none md:rounded-3xl border-0 md:border border-slate-200/90 shadow-none md:shadow-sm flex flex-col overflow-hidden h-full ${
           !selectedConvId ? 'hidden md:flex' : 'flex'
         }`}>
           {/* Chat Top Header */}
-          <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-white z-10">
-            <div className="flex items-center gap-3.5 min-w-0">
+          <div className="p-3 sm:p-4 border-b border-slate-100 flex items-center justify-between bg-white z-10 gap-2">
+            <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
               {/* Mobile Back Button */}
               <button
                 onClick={() => setSelectedConvId('')}
-                className="md:hidden p-1.5 rounded-xl text-slate-500 hover:bg-slate-100"
+                className="md:hidden p-1.5 -ml-1 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors flex items-center gap-0.5"
+                title="Back to conversations"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-5 h-5 text-slate-700" />
               </button>
 
               {/* Avatar */}
               <div className="relative flex-shrink-0">
                 {activeConversation.isGroup ? (
-                  <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center">
-                    <Users className="w-6 h-6" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm">
+                    <Users className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                 ) : activeConversation.isOrganizer ? (
-                  <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center">
-                    <Building2 className="w-6 h-6" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm">
+                    <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                 ) : (
                   <img
                     src={activeConversation.avatar}
                     alt={activeConversation.name}
-                    className="w-12 h-12 rounded-full object-cover ring-2 ring-slate-100"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-slate-100"
                   />
                 )}
                 {activeConversation.isOnline && (
-                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 ring-2 ring-white" />
                 )}
               </div>
 
               {/* User / Partner Details */}
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-tight truncate">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-bold text-slate-900 leading-tight truncate">
                     {activeConversation.name}{activeConversation.age ? `, ${activeConversation.age}` : ''}
                   </h3>
                   {activeConversation.isVerified && (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-100 flex-shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 fill-emerald-100 flex-shrink-0" />
                   )}
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium mt-0.5 truncate">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                <div className="flex items-center gap-1 text-[11px] sm:text-xs text-slate-600 font-medium mt-0.5 truncate">
+                  <Calendar className="w-3 h-3 text-pink-600 flex-shrink-0" />
                   <span className="truncate">Going to {activeConversation.eventName}</span>
                 </div>
 
-                <div className="flex items-center gap-2 text-[11px] text-slate-400 font-normal mt-0.5 flex-wrap">
+                <div className="hidden sm:flex items-center gap-2 text-[10px] text-slate-400 font-normal mt-0.5 truncate">
                   <span>📅 {activeConversation.eventDate} · 🕒 {activeConversation.eventTime}</span>
-                  <span>📍 {activeConversation.eventVenue}</span>
+                  <span className="truncate">📍 {activeConversation.eventVenue}</span>
                 </div>
               </div>
             </div>
 
             {/* Header Right Action Buttons */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <Link
                 to="/find-partner"
-                className="hidden sm:inline-flex items-center px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
+                className="hidden lg:inline-flex items-center px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
               >
                 View Profile
               </Link>
@@ -613,35 +624,27 @@ export const MessagesPage: React.FC = () => {
               {/* Phone Action */}
               <button
                 onClick={() => setIsShareModalOpen(true)}
-                className="p-2 rounded-xl text-slate-600 hover:text-pink-600 hover:bg-pink-50 transition-colors"
+                className="p-1.5 sm:p-2 rounded-xl text-slate-600 hover:text-pink-600 hover:bg-pink-50 transition-colors"
                 title="Call Partner"
               >
                 <Phone className="w-4 h-4" />
               </button>
 
-              {/* Video Action */}
+              {/* Video Action (Desktop/Tablet) */}
               <button
                 onClick={() => setIsShareModalOpen(true)}
-                className="p-2 rounded-xl text-slate-600 hover:text-pink-600 hover:bg-pink-50 transition-colors"
+                className="hidden sm:inline-flex p-2 rounded-xl text-slate-600 hover:text-pink-600 hover:bg-pink-50 transition-colors"
                 title="Video Call"
               >
                 <Video className="w-4 h-4" />
-              </button>
-
-              {/* Info Action */}
-              <button
-                onClick={() => navigate('/events')}
-                className="p-2 rounded-xl text-slate-600 hover:text-pink-600 hover:bg-pink-50 transition-colors"
-                title="Event Information"
-              >
-                <Info className="w-4 h-4" />
               </button>
 
               {/* More Options Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setShowOptionsMenu(!showOptionsMenu)}
-                  className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors"
+                  className="p-1.5 sm:p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors"
+                  aria-label="More options"
                 >
                   <MoreVertical className="w-4 h-4" />
                 </button>
@@ -657,6 +660,16 @@ export const MessagesPage: React.FC = () => {
                     >
                       <Phone className="w-3.5 h-3.5 text-pink-600" />
                       Share Contact
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('/events');
+                        setShowOptionsMenu(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 hover:bg-purple-50 sm:hidden"
+                    >
+                      <Info className="w-3.5 h-3.5 text-slate-600" />
+                      Event Info
                     </button>
                     <button
                       onClick={() => {
@@ -685,10 +698,10 @@ export const MessagesPage: React.FC = () => {
           </div>
 
           {/* Chat Messages Body */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-[#FAF7FD]/50">
+          <div ref={chatScrollContainerRef} className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3.5 bg-[#FAF7FD]/60">
             {/* Today Date Badge */}
             <div className="flex justify-center">
-              <span className="px-3.5 py-1 rounded-full bg-slate-200/80 text-slate-600 text-[11px] font-bold">
+              <span className="px-3 py-0.5 rounded-full bg-slate-200/80 text-slate-600 text-[10px] sm:text-[11px] font-bold">
                 Today
               </span>
             </div>
@@ -697,24 +710,24 @@ export const MessagesPage: React.FC = () => {
             {activeConversation.messages.map((msg) => {
               const isMe = msg.sender === 'me';
               return (
-                <div key={msg.id} className="space-y-3">
-                  <div className={`flex items-end gap-2.5 ${isMe ? 'justify-end' : 'justify-start'}`}>
+                <div key={msg.id} className="space-y-2">
+                  <div className={`flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'}`}>
                     {/* Left Sender Avatar */}
                     {!isMe && (
                       <img
                         src={msg.senderAvatar || activeConversation.avatar}
                         alt="sender"
-                        className="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200 flex-shrink-0 mb-5"
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover ring-1 ring-slate-200 flex-shrink-0 mb-4"
                       />
                     )}
 
-                    <div className="space-y-1 max-w-[82%] sm:max-w-md">
+                    <div className="space-y-1 max-w-[85%] sm:max-w-md">
                       {/* Message Bubble */}
                       <div
-                        className={`p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+                        className={`p-3 sm:p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                           isMe
-                            ? 'bg-pink-100/90 text-slate-900 rounded-br-none shadow-2xs font-normal'
-                            : 'bg-slate-100 text-slate-800 rounded-bl-none shadow-2xs font-normal'
+                            ? 'bg-pink-100/95 text-slate-900 rounded-br-none shadow-2xs font-normal'
+                            : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none shadow-2xs font-normal'
                         }`}
                       >
                         <p>{msg.text}</p>
@@ -732,35 +745,37 @@ export const MessagesPage: React.FC = () => {
                       <img
                         src={msg.senderAvatar}
                         alt="me"
-                        className="w-8 h-8 rounded-full object-cover ring-1 ring-pink-300 flex-shrink-0 mb-5"
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover ring-1 ring-pink-300 flex-shrink-0 mb-4"
                       />
                     )}
                   </div>
 
                   {/* Embedded Event Card (if message has event card) */}
                   {msg.hasEventCard && (
-                    <div className="max-w-lg p-3 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-between gap-3 sm:gap-4 my-2 ml-10">
-                      <img
-                        src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=300&q=80"
-                        alt="Ranchi Garba Night"
-                        className="w-16 h-16 sm:w-20 sm:h-16 rounded-xl object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
-                          {activeConversation.eventName}
-                        </h4>
-                        <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
-                          <Calendar className="w-3 h-3 text-pink-600 flex-shrink-0" />
-                          <span>{activeConversation.eventDate} · {activeConversation.eventTime}</span>
-                        </div>
-                        <div className="text-[10px] text-slate-400 flex items-center gap-1 truncate mt-0.5">
-                          <MapPin className="w-3 h-3 text-pink-600 flex-shrink-0" />
-                          <span className="truncate">{activeConversation.eventVenue}</span>
+                    <div className="max-w-lg p-2.5 sm:p-3 rounded-2xl border border-slate-200/90 bg-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4 my-2 ml-0 sm:ml-9">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <img
+                          src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=300&q=80"
+                          alt="Ranchi Garba Night"
+                          className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                            {activeConversation.eventName}
+                          </h4>
+                          <div className="text-[10px] sm:text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
+                            <Calendar className="w-3 h-3 text-pink-600 flex-shrink-0" />
+                            <span>{activeConversation.eventDate} · {activeConversation.eventTime}</span>
+                          </div>
+                          <div className="text-[10px] text-slate-400 flex items-center gap-1 truncate mt-0.5">
+                            <MapPin className="w-3 h-3 text-pink-600 flex-shrink-0" />
+                            <span className="truncate">{activeConversation.eventVenue}</span>
+                          </div>
                         </div>
                       </div>
                       <Link
                         to="/events/event-ranchi-01"
-                        className="py-2 px-3.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold whitespace-nowrap shadow-sm transition-transform active:scale-95"
+                        className="w-full sm:w-auto text-center py-1.5 sm:py-2 px-3 sm:px-3.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold whitespace-nowrap shadow-sm transition-transform active:scale-95"
                       >
                         View Event
                       </Link>
@@ -769,21 +784,20 @@ export const MessagesPage: React.FC = () => {
                 </div>
               );
             })}
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Bottom Message Composer Input Bar */}
-          <div className="p-3 sm:p-4 bg-white border-t border-slate-100">
-            <form onSubmit={handleSendMessage} className="flex items-center gap-2 sm:gap-3">
-              <div className="flex-1 flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl border border-slate-200/90 bg-white focus-within:border-pink-500 focus-within:ring-1 focus-within:ring-pink-500 transition-all shadow-2xs">
+          <div className="p-2.5 sm:p-3.5 bg-white border-t border-slate-100">
+            <form onSubmit={handleSendMessage} className="flex items-center gap-1.5 sm:gap-3">
+              <div className="flex-1 flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl border border-slate-200/90 bg-slate-50/70 focus-within:bg-white focus-within:border-pink-500 focus-within:ring-1 focus-within:ring-pink-500 transition-all shadow-2xs">
                 {/* Emoji Button */}
                 <button
                   type="button"
                   onClick={() => setInputText((prev) => prev + '💃 ')}
-                  className="text-slate-400 hover:text-slate-600 transition-colors p-0.5"
+                  className="text-slate-400 hover:text-slate-600 transition-colors p-1"
                   title="Insert emoji"
                 >
-                  <Smile className="w-5 h-5" />
+                  <Smile className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
 
                 {/* Text Input */}
@@ -792,25 +806,25 @@ export const MessagesPage: React.FC = () => {
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="Type a message..."
-                  className="flex-1 bg-transparent text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                  className="flex-1 bg-transparent text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none min-w-0"
                 />
 
                 {/* Image Upload Button */}
                 <button
                   type="button"
-                  className="text-slate-400 hover:text-slate-600 transition-colors p-0.5"
+                  className="text-slate-400 hover:text-slate-600 transition-colors p-1"
                   title="Attach Image"
                 >
-                  <ImageIcon className="w-4 h-4" />
+                  <ImageIcon className="w-4 h-4 sm:w-4 sm:h-4" />
                 </button>
 
                 {/* Attachment Button */}
                 <button
                   type="button"
-                  className="text-slate-400 hover:text-slate-600 transition-colors p-0.5"
+                  className="text-slate-400 hover:text-slate-600 transition-colors p-1"
                   title="Attach File"
                 >
-                  <Paperclip className="w-4 h-4" />
+                  <Paperclip className="w-4 h-4 sm:w-4 sm:h-4" />
                 </button>
               </div>
 
@@ -818,9 +832,9 @@ export const MessagesPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={!inputText.trim()}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-pink-600 hover:bg-pink-700 text-white flex items-center justify-center shadow-md shadow-pink-500/20 transition-all active:scale-95 disabled:opacity-40 flex-shrink-0"
+                className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-pink-600 hover:bg-pink-700 text-white flex items-center justify-center shadow-md shadow-pink-500/20 transition-all active:scale-95 disabled:opacity-40 flex-shrink-0"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             </form>
           </div>

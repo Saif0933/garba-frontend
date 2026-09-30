@@ -5,7 +5,7 @@ import { Heart, Sparkles } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#19082B] text-purple-200/90 pt-16 pb-24 lg:pb-12 border-t border-purple-900/50">
+    <footer className="w-full max-w-full overflow-hidden bg-[#19082B] text-purple-200/90 pt-16 pb-24 lg:pb-12 border-t border-purple-900/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 pb-12 border-b border-purple-900/60">
           {/* Col 1: Brand & Community Mission */}
