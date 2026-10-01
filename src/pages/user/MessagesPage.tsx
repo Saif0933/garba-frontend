@@ -369,6 +369,10 @@ export const MessagesPage: React.FC = () => {
   const targetUser = users.find((u) => u.name.toLowerCase().includes(activeConversation.name.toLowerCase())) || users[0];
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [selectedConvId]);
+
+  useEffect(() => {
     if (chatScrollContainerRef.current) {
       chatScrollContainerRef.current.scrollTop = chatScrollContainerRef.current.scrollHeight;
     }
@@ -415,7 +419,7 @@ export const MessagesPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto p-0 md:px-4 md:py-3 h-full flex flex-col min-h-0 overflow-hidden">
+    <div className="fixed inset-0 z-30 md:static md:inset-auto md:z-auto w-full max-w-[1400px] mx-auto p-0 md:px-4 md:py-3 h-[100dvh] md:h-full flex flex-col min-h-0 overflow-hidden bg-[#FAF7FD]">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-0 md:gap-4 lg:gap-6 h-full w-full flex-1 min-h-0 items-stretch">
         
         {/* ================= LEFT PANEL: CONVERSATIONS LIST ================= */}

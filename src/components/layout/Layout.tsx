@@ -13,6 +13,10 @@ export const Layout: React.FC = () => {
   const hideFooter = isAuthPage || isMessagesPage;
   const hideMobileNav = isAuthPage || isMessagesPage;
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <div className={`flex flex-col bg-[#FAF7FD] w-full max-w-full overflow-x-hidden ${isMessagesPage ? 'h-screen h-[100dvh] overflow-hidden' : 'min-h-screen'}`}>
       {!isAuthPage && (
