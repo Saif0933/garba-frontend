@@ -415,15 +415,15 @@ export const MessagesPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto p-0 md:px-4 md:py-4 h-[calc(100dvh-58px)] md:h-[calc(100vh-80px)] flex flex-col">
+    <div className="w-full max-w-[1400px] mx-auto p-0 md:px-4 md:py-3 h-full flex flex-col min-h-0 overflow-hidden">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-0 md:gap-4 lg:gap-6 h-full w-full flex-1 min-h-0 items-stretch">
         
         {/* ================= LEFT PANEL: CONVERSATIONS LIST ================= */}
-        <div className={`col-span-12 md:col-span-5 lg:col-span-4 bg-white rounded-none md:rounded-3xl border-0 md:border border-slate-200/90 shadow-none md:shadow-sm flex flex-col overflow-hidden h-full ${
+        <div className={`col-span-12 md:col-span-5 lg:col-span-4 bg-white rounded-none md:rounded-3xl border-0 md:border border-slate-200/90 shadow-none md:shadow-sm flex flex-col overflow-hidden h-full min-h-0 ${
           selectedConvId ? 'hidden md:flex' : 'flex'
         }`}>
           {/* Header Title */}
-          <div className="p-3.5 sm:p-5 pb-2.5 sm:pb-3 border-b border-slate-100 space-y-3 bg-white">
+          <div className="p-3.5 sm:p-5 pb-2.5 sm:pb-3 border-b border-slate-100 space-y-3 bg-white flex-shrink-0 z-10">
             <div className="flex items-center justify-between">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 font-heading flex items-center gap-2">
                 Messages <span className="text-slate-500 font-semibold text-sm sm:text-base font-sans">({conversationList.length})</span>
@@ -485,7 +485,7 @@ export const MessagesPage: React.FC = () => {
           </div>
 
           {/* Conversations Scrollable List */}
-          <div className="flex-1 overflow-y-auto p-2 sm:p-3 space-y-1.5 divide-y divide-transparent">
+          <div className="flex-1 overflow-y-auto min-h-0 p-2 sm:p-3 space-y-1.5 divide-y divide-transparent overscroll-contain">
             {filteredConversations.map((conv) => {
               const isSelected = selectedConvId === conv.id;
               return (
@@ -552,11 +552,11 @@ export const MessagesPage: React.FC = () => {
         </div>
 
         {/* ================= RIGHT PANEL: ACTIVE CHAT WINDOW ================= */}
-        <div className={`col-span-12 md:col-span-7 lg:col-span-8 bg-white rounded-none md:rounded-3xl border-0 md:border border-slate-200/90 shadow-none md:shadow-sm flex flex-col overflow-hidden h-full ${
+        <div className={`col-span-12 md:col-span-7 lg:col-span-8 bg-white rounded-none md:rounded-3xl border-0 md:border border-slate-200/90 shadow-none md:shadow-sm flex flex-col overflow-hidden h-full min-h-0 ${
           !selectedConvId ? 'hidden md:flex' : 'flex'
         }`}>
           {/* Chat Top Header */}
-          <div className="p-3 sm:p-4 border-b border-slate-100 flex items-center justify-between bg-white z-10 gap-2">
+          <div className="p-3 sm:p-4 border-b border-slate-100 flex items-center justify-between bg-white z-10 gap-2 flex-shrink-0">
             <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
               {/* Mobile Back Button */}
               <button
@@ -698,7 +698,7 @@ export const MessagesPage: React.FC = () => {
           </div>
 
           {/* Chat Messages Body */}
-          <div ref={chatScrollContainerRef} className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3.5 bg-[#FAF7FD]/60">
+          <div ref={chatScrollContainerRef} className="flex-1 overflow-y-auto min-h-0 p-3 sm:p-5 space-y-3.5 bg-[#FAF7FD]/60 overscroll-contain">
             {/* Today Date Badge */}
             <div className="flex justify-center">
               <span className="px-3 py-0.5 rounded-full bg-slate-200/80 text-slate-600 text-[10px] sm:text-[11px] font-bold">
@@ -787,7 +787,7 @@ export const MessagesPage: React.FC = () => {
           </div>
 
           {/* Bottom Message Composer Input Bar */}
-          <div className="p-2.5 sm:p-3.5 bg-white border-t border-slate-100">
+          <div className="p-2.5 sm:p-3.5 bg-white border-t border-slate-100 flex-shrink-0 z-10">
             <form onSubmit={handleSendMessage} className="flex items-center gap-1.5 sm:gap-3">
               <div className="flex-1 flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl border border-slate-200/90 bg-slate-50/70 focus-within:bg-white focus-within:border-pink-500 focus-within:ring-1 focus-within:ring-pink-500 transition-all shadow-2xs">
                 {/* Emoji Button */}

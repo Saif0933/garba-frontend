@@ -14,9 +14,9 @@ export const Layout: React.FC = () => {
   const hideMobileNav = isAuthPage || isMessagesPage;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF7FD] w-full max-w-full overflow-x-hidden">
+    <div className={`flex flex-col bg-[#FAF7FD] w-full max-w-full overflow-x-hidden ${isMessagesPage ? 'h-screen h-[100dvh] overflow-hidden' : 'min-h-screen'}`}>
       {!isAuthPage && <Navbar />}
-      <main className={`flex-1 w-full max-w-full flex flex-col ${isAuthPage || isMessagesPage ? 'pb-0' : 'pb-20 md:pb-0'}`}>
+      <main className={`flex-1 w-full max-w-full flex flex-col min-h-0 ${isAuthPage || isMessagesPage ? 'pb-0 overflow-hidden' : 'pb-20 md:pb-0'}`}>
         <Outlet />
       </main>
       {!hideFooter && <Footer />}
