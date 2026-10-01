@@ -425,9 +425,18 @@ export const MessagesPage: React.FC = () => {
           {/* Header Title */}
           <div className="p-3.5 sm:p-5 pb-2.5 sm:pb-3 border-b border-slate-100 space-y-3 bg-white flex-shrink-0 z-10">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg sm:text-xl font-bold text-slate-900 font-heading flex items-center gap-2">
-                Messages <span className="text-slate-500 font-semibold text-sm sm:text-base font-sans">({conversationList.length})</span>
-              </h2>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <button
+                  onClick={() => navigate(-1)}
+                  className="md:hidden p-1.5 -ml-1 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors flex items-center justify-center"
+                  title="Go back"
+                >
+                  <ArrowLeft className="w-5 h-5 text-slate-700" />
+                </button>
+                <h2 className="text-lg sm:text-xl font-bold text-slate-900 font-heading flex items-center gap-2">
+                  Messages <span className="text-slate-500 font-semibold text-sm sm:text-base font-sans">({conversationList.length})</span>
+                </h2>
+              </div>
             </div>
 
             {/* Search Box */}

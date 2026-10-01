@@ -15,7 +15,11 @@ export const Layout: React.FC = () => {
 
   return (
     <div className={`flex flex-col bg-[#FAF7FD] w-full max-w-full overflow-x-hidden ${isMessagesPage ? 'h-screen h-[100dvh] overflow-hidden' : 'min-h-screen'}`}>
-      {!isAuthPage && <Navbar />}
+      {!isAuthPage && (
+        <div className={isMessagesPage ? 'hidden md:block flex-shrink-0' : 'flex-shrink-0'}>
+          <Navbar />
+        </div>
+      )}
       <main className={`flex-1 w-full max-w-full flex flex-col min-h-0 ${isAuthPage || isMessagesPage ? 'pb-0 overflow-hidden' : 'pb-20 md:pb-0'}`}>
         <Outlet />
       </main>
