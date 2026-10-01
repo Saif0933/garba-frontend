@@ -139,10 +139,8 @@ const defaultFilterState: FilterState = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Auth State
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    return storageService.get<User | null>('currentUser', CURRENT_DEMO_USER);
-  });
+  // Auth State (Starts as null so initial screen is always Login Page)
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // Data Collections with localStorage caching
   const [events, setEvents] = useState<FestivalEvent[]>(() => {

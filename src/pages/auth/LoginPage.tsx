@@ -17,19 +17,8 @@ import {
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const { login, loginAsDemoUser, loginAsDemoAdmin, isLoggedIn, isAdmin } = useApp();
+  const { login, loginAsDemoUser, loginAsDemoAdmin } = useApp();
   const navigate = useNavigate();
-
-  // If already logged in, redirect directly to dashboard or admin
-  React.useEffect(() => {
-    if (isLoggedIn) {
-      if (isAdmin) {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
-    }
-  }, [isLoggedIn, isAdmin, navigate]);
 
   const [role, setRole] = useState<'partner' | 'organizer'>('partner');
   const [email, setEmail] = useState('user@garbamitra.com');
