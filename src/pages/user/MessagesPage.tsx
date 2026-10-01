@@ -364,9 +364,39 @@ export const MessagesPage: React.FC = () => {
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
 
   const chatScrollContainerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
 
   const activeConversation = conversationList.find((c) => c.id === selectedConvId) || conversationList[0];
   const targetUser = users.find((u) => u.name.toLowerCase().includes(activeConversation.name.toLowerCase())) || users[0];
+
+  // Track dynamic visual viewport on mobile devices when keyboard opens/closes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const updateViewport = () => {
+      if (window.visualViewport) {
+        setViewportHeight(window.visualViewport.height);
+        window.scrollTo(0, 0);
+        if (chatScrollContainerRef.current) {
+          chatScrollContainerRef.current.scrollTop = chatScrollContainerRef.current.scrollHeight;
+        }
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateViewport);
+      window.visualViewport.addEventListener('scroll', updateViewport);
+      updateViewport();
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', updateViewport);
+        window.visualViewport.removeEventListener('scroll', updateViewport);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -416,10 +446,22 @@ export const MessagesPage: React.FC = () => {
     );
 
     setInputText('');
+
+    // Keep mobile keyboard open and focused
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
   };
 
   return (
-    <div className="fixed inset-0 z-30 md:static md:inset-auto md:z-auto w-full max-w-[1400px] mx-auto p-0 md:px-4 md:py-3 h-[100dvh] md:h-full flex flex-col min-h-0 overflow-hidden bg-[#FAF7FD]">
+    <div
+      style={
+        viewportHeight && typeof window !== 'undefined' && window.innerWidth < 768
+          ? { height: `${viewportHeight}px`, top: 0, bottom: 'auto' }
+          : undefined
+      }
+      className="fixed inset-x-0 top-0 z-30 md:static md:inset-auto md:z-auto w-full max-w-[1400px] mx-auto p-0 md:px-4 md:py-3 h-[100dvh] md:h-full flex flex-col min-h-0 overflow-hidden bg-[#FAF7FD]"
+    >
       <div className="grid grid-cols-1 md:grid-cols-12 gap-0 md:gap-4 lg:gap-6 h-full w-full flex-1 min-h-0 items-stretch">
         
         {/* ================= LEFT PANEL: CONVERSATIONS LIST ================= */}
@@ -815,6 +857,7 @@ export const MessagesPage: React.FC = () => {
 
                 {/* Text Input */}
                 <input
+                  ref={inputRef}
                   type="text"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
@@ -825,6 +868,7 @@ export const MessagesPage: React.FC = () => {
                 {/* Image Upload Button */}
                 <button
                   type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   className="text-slate-400 hover:text-slate-600 transition-colors p-1"
                   title="Attach Image"
                 >
@@ -834,6 +878,7 @@ export const MessagesPage: React.FC = () => {
                 {/* Attachment Button */}
                 <button
                   type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   className="text-slate-400 hover:text-slate-600 transition-colors p-1"
                   title="Attach File"
                 >
@@ -844,8 +889,10 @@ export const MessagesPage: React.FC = () => {
               {/* Pink Circular Send Button */}
               <button
                 type="submit"
-                disabled={!inputText.trim()}
-                className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-pink-600 hover:bg-pink-700 text-white flex items-center justify-center shadow-md shadow-pink-500/20 transition-all active:scale-95 disabled:opacity-40 flex-shrink-0"
+                onMouseDown={(e) => e.preventDefault()}
+                className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-pink-600 hover:bg-pink-700 text-white flex items-center justify-center shadow-md shadow-pink-500/20 transition-all active:scale-95 flex-shrink-0 ${
+                  !inputText.trim() ? 'opacity-40 cursor-not-allowed' : 'opacity-100'
+                }`}
               >
                 <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
